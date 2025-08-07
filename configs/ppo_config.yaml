@@ -1,0 +1,157 @@
+# PPO Configuration for Mini Metro RL
+experiment_name: "ppo_baseline"
+description: "Baseline PPO agent for Mini Metro with standard hyperparameters"
+tags: ["ppo", "baseline", "mini-metro"]
+
+# Game Configuration
+game:
+  map_name: "london"
+  difficulty: "normal"
+  real_time: false
+  time_step: 1.0
+  max_episode_steps: 3000
+  seed: 42
+  
+  # Game mechanics
+  week_duration: 60.0
+  passenger_spawn_rate: 1.0
+  week_escalation_factor: 1.2
+  max_station_overload_time: 30.0
+
+# Environment Configuration
+environment:
+  observation_type: "vector"
+  action_space_type: "discrete"
+  reward_shaping: true
+  normalize_observations: true
+  normalize_rewards: false
+  
+  # Reward weights
+  reward_weights:
+    passenger_delivery: 10.0
+    passenger_satisfaction: 5.0
+    efficiency: 3.0
+    resource_optimization: 2.0
+    congestion_penalty: -15.0
+    passenger_loss_penalty: -20.0
+    game_over_penalty: -100.0
+    time_bonus: 1.0
+
+# PPO Agent Configuration
+ppo:
+  # Learning parameters
+  learning_rate: 0.0003
+  gamma: 0.99
+  gae_lambda: 0.95
+  
+  # PPO specific
+  clip_range: 0.2
+  clip_range_vf: null
+  entropy_coef: 0.01
+  value_coef: 0.5
+  max_grad_norm: 0.5
+  
+  # Training
+  n_steps: 2048
+  batch_size: 64
+  n_epochs: 10
+  
+  # Network architecture
+  network:
+    hidden_sizes: [512, 512, 256]
+    activation: "relu"
+    dropout: 0.0
+    batch_norm: false
+  
+  # Advanced features
+  normalize_advantage: true
+  use_sde: false
+  sde_sample_freq: -1
+
+# Training Configuration
+training:
+  total_timesteps: 1000000
+  eval_frequency: 10000
+  eval_episodes: 10
+  save_frequency: 50000
+  
+  # Logging
+  log_frequency: 1000
+  tensorboard_log: true
+  wandb_log: false
+  verbose: 1
+  
+  # Checkpointing
+  save_path: "./models/ppo"
+  checkpoint_frequency: 100000
+  keep_n_checkpoints: 5
+  
+  # Early stopping
+  early_stopping: false
+  patience: 10
+  min_improvement: 0.01
+  
+  # Curriculum learning
+  curriculum_learning: false
+  curriculum_stages: []
+  
+  # Hyperparameter optimization
+  hyperopt: false
+  hyperopt_trials: 100
+  hyperopt_sampler: "tpe"
+
+# Logging Configuration
+logging:
+  log_level: "INFO"
+  log_format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  log_file: null
+  
+  # TensorBoard
+  tensorboard_dir: "./logs/tensorboard/ppo"
+  log_graph: true
+  log_images: true
+  log_histograms: false
+  
+  # Weights & Biases
+  wandb_project: "mini-metro-rl"
+  wandb_entity: null
+  wandb_tags: ["ppo", "baseline"]
+  
+  # Custom metrics
+  custom_metrics:
+    - "passenger_delivery_rate"
+    - "network_efficiency"
+    - "resource_utilization"
+    - "passenger_satisfaction"
+
+# Visualization Configuration
+visualization:
+  render_mode: "rgb_array"
+  fps: 30
+  resolution: [800, 600]
+  
+  # Pygame rendering
+  show_passenger_destinations: true
+  show_train_loads: true
+  show_station_queues: true
+  show_performance_metrics: false
+  
+  # Recording
+  record_videos: false
+  video_frequency: 100
+  video_length: 1000
+  
+  # Real-time visualization
+  realtime_plotting: false
+  plot_update_frequency: 100
+
+# Multi-agent (not used for PPO baseline)
+multi_agent:
+  agent_type: "ppo"
+  num_agents: 1
+  shared_experience: false
+  centralized_critic: false
+  enable_communication: false
+  communication_dim: 64
+  coordination_graph: false
+  value_decomposition: "none"
